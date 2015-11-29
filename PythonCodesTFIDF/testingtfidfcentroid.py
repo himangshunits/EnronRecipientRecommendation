@@ -1,3 +1,5 @@
+#The code below is one of the versions of testing created before combing it to geTtfidfArrays.py
+#A sample variable vocab is used to store a sample set of words from a document
 from __future__ import division
 import mysql.connector
 import math
@@ -30,6 +32,7 @@ for each in vocab:
 no_of_terms = len(Vocab)
 
 term_vector = [0 for x in range(len(bag_of_words))]
+#Calculates the tfidf score of all the terms in the sample document
 i = 0
 temp = []
 tfidf = []
