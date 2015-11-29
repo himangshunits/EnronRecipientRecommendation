@@ -81,27 +81,4 @@ def getAccurateCleanedData(data, usefulWords):
     
 
 
-    return cleaned_data   
-	
-'''
-from sklearn.feature_extraction.text import CountVectorizer
-cleaned_data = getVocab("Himangshu Ranjan Borah is a student at NC State.student")
-vectorizer = CountVectorizer(analyzer = "word",tokenizer = None,preprocessor = None,stop_words = None)
-word_features=vectorizer.fit_transform(cleaned_data);
-a=scipy.sparse.find(word_features)
-vocab = vectorizer.get_feature_names()
-print vocab
-row=a[0]
-col=a[1]
-vals=a[2]
-print vals
-for i in range(0,len(row)):
-    #print " doc ",row[i]," term ",vocab[col[i]]," count ",vals[i]
-    doc_term=(vocab[col[i]],vals[i])
-    print doc_term
-#a=word_features.getrow(0).toarray()
-
-
-#temp = getAccurateVocab("Himangshu Ranjan Borah is a student at NC State", "himangshu borah")
-#print temp
-#print temp1'''
+    return cleaned_data  
