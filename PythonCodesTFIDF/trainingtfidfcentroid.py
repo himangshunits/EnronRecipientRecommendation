@@ -1,3 +1,4 @@
+#load directories
 from __future__ import division
 import mysql.connector
 import math
