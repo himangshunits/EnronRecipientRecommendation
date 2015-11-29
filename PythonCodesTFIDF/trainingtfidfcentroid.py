@@ -1,3 +1,10 @@
+##The aim of the code is to calculate the tfidf-centroid for each of the users in the recipient list
+##The body of each email is preprocessed and represented as a table called the document_term table
+##Each row in the document_term table is as follows:
+#1. The document number representaing an id given to each email (N)
+#2. The term (T) in the document (N)
+#3. A raw count of the number of times term T was found in document N
+
 #load directories
 from __future__ import division
 import mysql.connector
@@ -7,28 +14,30 @@ import string
 cnx = mysql.connector.connect(user='sushma', database='enron4',password='Sushma26011993',host='localhost')
 cursor = cnx.cursor();
 cursor.execute("select count(distinct number) from document_term")
+#Counts the total number of distinct documents in the dataset
 for each in cursor:
   no_of_docs = each[0]
 
-print "FIRST PART DONE"
+
 tfidf = []
 doc_total_terms = {}
 cnx = mysql.connector.connect(user='sushma', database='enron4',password='Sushma26011993',host='localhost')
 cursor = cnx.cursor();
 cursor.execute("SELECT number, sum(count) from document_term group by number");
+#Counts the total number of terms per document
 for each in cursor:
     doc_total_terms[each[0]] = each[1]
-print "SECOND PART DONE"
+
 
 term_occurence = {} #Holds the value n(t)
 
 cursor.execute("select term, count(*) from document_term group by term");
 for each in cursor:
     term_occurence[each[0]] = each[1]
-print "THIRD PART DONE"
+
 cnx = mysql.connector.connect(user='sushma', database='enron4',password='Sushma26011993',host='localhost')
 cursor = cnx.cursor();
-###Calculates the Document Term Weight Part 1
+###Calculates the Document Term Weight
 ### (f(t,d) *  log(N/n(t)))
 cursor.execute("SELECT * from document_term");
 for each in cursor:
@@ -39,7 +48,9 @@ for each in cursor:
     temp.append(each[1])
     temp.append(float(ftd) * float(idf))
     tfidf.append(temp)
-print "FOURTH PART DONE"
+
+#Normaliding the tfidf scores
+#sumoftfidf[] contains the toal of tfidf scores per document
 i = tfidf[0][0]
 sumoftfidf = []
 tempsum = 0
@@ -51,7 +62,11 @@ for each in tfidf:
         sumoftfidf.append(tempsum)
         tempsum = each[2]
 sumoftfidf.append(tempsum)
-print "FIFTH PART DONE"
+#document vector is a matrix with three values in each row:
+#1. The document number (N)
+#2. The term (T) in the document (N)
+#3. The normalised tfidf score of T in N
+
 document_vector = {}
 i = tfidf[0][0]
 count = 0
@@ -67,25 +82,31 @@ for each in tfidf:
 		else:
 		    temp.append(each[2]/sumoftfidf[count])
 	document_vector[each[0], each[1]] = temp
-print count
-print "SIXTH PART DONE"
 
 
-###TO CREATE THE TFIDF CENTROID
+
+
+#################TO CREATE THE TFIDF CENTROID
+
+#Fetches the Receive List
 fp = open('C:\\Users\\Master Admin\\Documents\\ALDA_project\\UsersFiltered3319.txt', 'r')
 lines = fp.readlines()
 userslist = []
 for each in lines:
     userslist.append(each[(each.find('\t') + 2):-2])
+
+#Counts the total number of terms in all the documents
 cursor.execute("select count(distinct term) from document_term")##Takes a little time
 for each in cursor:
   no_of_words = each[0]
-#################################################################document_vector_matrix = [[0 for x in range(no_of_words)] for x in range(no_of_docs)]##Takes a little time
+
+#fetches all the terms in the data set
 bag_of_words = []
 cursor.execute("select distinct term from document_term")
 for each in cursor:
     bag_of_words.append(each[0])
-print "SEVENTH PART DONE"
+
+#Fetches all the distinct documents from the data set
 list_of_documents = []
 mid_set=""
 cursor.execute("select distinct number from document_term")
@@ -94,21 +115,23 @@ for each in cursor:
     mid_set=mid_set+str(each[0])+","
 mid_set=mid_set.rstrip(",")
 mid_set="("+mid_set+")"
-##print mid_set
+
 users_mid = {}
 
-print "EIGHTH PART DONE"
-#CODE THAT WORKS (TO CREATE DICTIONARY) 
+
+##Creates a dictionary where:
+# Key: Each recipient user
+# Value: List of document number corresponding to the emails he/she received
 for each in userslist:
 	cnx = mysql.connector.connect(user='sushma', database='enron4',password='Sushma26011993',host='localhost')
 	cursor = cnx.cursor();
 	cursor.execute("select mid from recipientinfo where rvalue = '%s' and rtype = 'TO' and mid in %s" %(each, mid_set))
 	users_mid[each] = list(cursor.fetchall())
-print "NINTH PART DONE"
 
 
 
-#CODE THAT WORKS (TO CREATE TFIDF_CENTROID MATRIX)
+
+#CREATE TFIDF_CENTROID MATRIX)
 tfidf_centroid = [[0 for x in range(no_of_words)] for x in range(len(userslist))]
 i = -1
 for eachuser in userslist:
@@ -120,5 +143,3 @@ for eachuser in userslist:
 		cursor.execute("select term from document_term where number = %s" %each)
 		for every in cursor:
 			tfidf_centroid[userslist.index(users_mid.keys()[i])][bag_of_words.index(unicode(str(every)[3:-3]))] = tfidf_centroid[userslist.index(users_mid.keys()[i])][bag_of_words.index(unicode(str(every)[3:-3]))] + document_vector[(int(str(each)[1:-2])), (unicode(str(every)[3:-3]))][0]
-
-print "10 parts done"
