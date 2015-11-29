@@ -1,11 +1,15 @@
 The repository contains the code and databases needed for the following project
-"Likelihood Prediction of Email Participants using Multi-dimensional Association Networks"
+
+#Likelihood Prediction of Email Participants using Multi-dimensional Association Networks
 
 The code in the repository has lots of dependencies on the configuration of the system and other rletaed modules. We have tried to be as comprehensive as possible, but it may contain some deficiencies for whihc the codes may fail to run. Kindly get in touch with the owners for detailed information!
 
 Authors:
+
 Himangshu Ranajn Borah
+
 Sukriti Sharma
+
 Sushma Ravichandran
 
 To get the system up and running, we need to install the following tools and libraries. References given here are for a MAC platform, kindly refer to respective guides for other platforms.
@@ -42,8 +46,11 @@ Hopefully the list is exclusive, if any error comes for any missing component, j
 Details about the codes:
 
 The codes are broadly divivded into three categories
+
 1. PythonCodesNLP -> Codes for prerpocessing the main Dataset and extracting the mails to form the SQL database and also cleaning up the test messges.(Directory Owner : Sukriti Sharma)
+
 2. PythonCodesTFIDF -> Python codes for the TFIDF centroid calculations(Directory Owner : Sushma Ravichandran)
+
 3. RCodesAssociationGraphs -> R Codes for modeling all the association graphs and the final integration testing. Please refer to the report for more details(Directory Owner : Himangshu Ranjan Borah)
 
 Descriptions of the individual scripts can be found inside the scripts!
