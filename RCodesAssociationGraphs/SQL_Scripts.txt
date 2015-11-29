@@ -1,0 +1,147 @@
+CREATE TABLE tutorials_tbl(
+   -> tutorial_id INT NOT NULL AUTO_INCREMENT,
+   -> tutorial_title VARCHAR(100) NOT NULL,
+   -> tutorial_author VARCHAR(40) NOT NULL,
+   -> submission_date DATE,
+   -> PRIMARY KEY ( tutorial_id )
+   -> );
+
+
+CREATE TABLE communications_train(
+cid int(10) NOT NULL,
+mid int(10) unsigned NOT NULL,
+sender varchar(127) NOT NULL,
+rvalue varchar(127),
+rtype enum('TO','CC','BCC'),
+PRIMARY KEY(cid)
+);
+
+
+
+CREATE TABLE communications_test(
+cid int(10) NOT NULL,
+mid int(10) unsigned NOT NULL,
+sender varchar(127) NOT NULL,
+rvalue varchar(127),
+rtype enum('TO','CC','BCC'),
+PRIMARY KEY(cid)
+);
+
+
+CREATE TABLE communications(
+cid int(10) NOT NULL,
+mid int(10) unsigned NOT NULL,
+sender varchar(127) NOT NULL,
+rvalue varchar(127),
+rtype enum('TO','CC','BCC'),
+PRIMARY KEY(cid)
+);
+
+
+
+select r.rtype,r.rvalue,m.sender from recipientinfo r, message m where r.mid = m.mid
+
+INSERT INTO communications (cid, mid, sender, rvalue, rtype )  
+SELECT r.rid, r.mid, m.sender, r.rvalue, r.rtype 
+FROM recipientinfo r, messages m
+WHERE r.mid = m.mid;
+
+
+select * from communications where sender="christian.yoder@enron.com" and rtype="CC" order by rvalue;
+alter table communications add column split enum('TRAINING','TESTING'); 
+
+
+mysqldump -u root -p enron_merged > /Users/Himangshu/Desktop/EnronDataset/enronDB/enron_merged/enron_merged.sql
+
+For TO graph
+
+select * from communications where rtype="TO" order by sender;
+
+
+select rvalue,count(*) from recipientinfo group by rvalue;
+
+select count(*) from communications where rtype="TO" group by sender,rvalue;
+
+select sender,rvalue,count(*) from communications where rtype="TO" group by sender,rvalue;
+
+select distinct sender, distinct rvalue from communications where rtype="TO";
+
+nrow(unique(countTable["sender"]))
+
+temp = c(countTable[,1],countTable[,2]);
+
+adjacency = matrix(nrow = 10, ncol = 10);
+colnames(adjacency)=c(users[1:10]);
+rownames(adjacency)=c(users[1:10]);
+
+recCount = dbGetQuery(con,"select rvalue,count(*) from communications group by rvalue;");
+
+senderCount = dbGetQuery(con,"select sender,count(*) from communications group by sender;");
+
+temp1 = subset(recCount, recCount[,2] > 100);
+
+temp = subset(senderCount, senderCount[,2] > 100);
+temp2 = c(temp[,1],temp1[,1]);
+
+
+
+> usersFiltered = unique(temp2);
+> adjacency = matrix(nrow = 4062, ncol = 4062);
+> colnames(adjacency)=c(usersFiltered);
+> rownames(adjacency)=c(usersFiltered);
+
+
+
+for(i in 1:276139){	
+	if(!is.na(match(countTable[i,1],usersFiltered)) && !is.na(match(countTable[i,2], usersFiltered))){
+		adjacency[countTable[i,1], countTable[i,2]] = countTable[i,3];
+	}
+}
+
+
+INSERT INTO communications_train (cid, mid, sender, rvalue, rtype )  
+SELECT r.rid, r.mid, m.sender, r.rvalue, r.rtype 
+FROM recipientinfo r, messages m
+WHERE r.mid = m.mid AND m.split = 'TRAINING';
+
+INSERT INTO communications_test (cid, mid, sender, rvalue, rtype )  
+SELECT r.rid, r.mid, m.sender, r.rvalue, r.rtype 
+FROM recipientinfo r, messages m
+WHERE r.mid = m.mid AND m.split = 'TESTING';
+
+
+
+CREATE TABLE communications_term_train(
+cid int(10) NOT NULL,
+mid int(10) unsigned NOT NULL,
+sender varchar(127) NOT NULL,
+rvalue varchar(127),
+rtype enum('TO','CC','BCC'),
+term varchar(300),
+count int(11),
+PRIMARY KEY(mid)
+);
+
+number | int(11)      | YES  | MUL | NULL    |       |
+| term   | varchar(300) | YES  | MUL | NULL    |       |
+| count  | int(11)
+
+
+select body from messages where mid = 296785
+
+CREATE TABLE communications_term_train(
+cid int(10) NOT NULL,
+mid int(10) unsigned NOT NULL,
+sender varchar(127) NOT NULL,
+rvalue varchar(127),
+rtype enum('TO','CC','BCC'),
+term varchar(300),
+count int(11),
+PRIMARY KEY(cid)
+);
+
+
+INSERT INTO communications_term_train (cid, mid, sender, rvalue, rtype, term, count )  
+SELECT c.cid, c.mid, c.sender, c.rvalue, c.rtype, d.term, d.count 
+FROM communications_train c, document_term d
+WHERE c.mid = d.number;

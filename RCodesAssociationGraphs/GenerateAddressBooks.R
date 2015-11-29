@@ -1,0 +1,1 @@
+#all the non zero columns of a particular row corresponds to the AB of that user whose row it is!

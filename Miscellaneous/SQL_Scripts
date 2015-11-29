@@ -1,0 +1,60 @@
+select body from messages where mid = 296785
+
+CREATE TABLE communications_term_train(
+cid int(10) NOT NULL,
+mid int(10) unsigned NOT NULL,
+sender varchar(127) NOT NULL,
+rvalue varchar(127),
+rtype enum('TO','CC','BCC'),
+term varchar(300),
+count int(11),
+PRIMARY KEY(cid)
+);
+
+
+alter table communications_term_train add index (mid);
+
+alter table communications_term_train drop primary key;
+
+INSERT INTO communications_term_train (cid, mid, sender, rvalue, rtype, term, count )  
+SELECT c.cid, c.mid, c.sender, c.rvalue, c.rtype, d.term, d.count 
+FROM communications_train c, document_term d
+WHERE c.mid = d.number;
+
+select sender,rvalue,term,count(*) from communications_term_train where rtype='TO' group by sender,rvalue,term order by count(*) desc;
+
+
+
+
+
+
+
+
+drv = dbDriver("MySQL")
+con = dbConnect(drv, user="root", dbname="enron_document_term", password="test@123")
+
+# P(w|R,S)
+select sender,rvalue,term,count(*) from communications_term_train where rtype='TO' group by sender,rvalue,term;
+
+# for P(w|R) 
+select rvalue,term,count(*) from communications_term_train where rtype='TO' group by rvalue,term;
+
+# for P(w)
+select term,count(*) from document_term group by term order by count(*) desc;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DELETE FROM document_term where term NOT IN(select term from document_term group by term order by count(*) desc limit 3000)
