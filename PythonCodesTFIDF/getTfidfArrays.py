@@ -1,3 +1,7 @@
+#load all directories
+#This program was run as a test code for testing tfidf centroid for test users.
+#It is a combination of GetVocab.py and testingtfidf.py
+#The result from trainingtfidf.py is stored in a numpy array called array.npy
 from __future__ import division
 import mysql.connector
 import math
@@ -9,8 +13,8 @@ import mysql.connector
 import scipy.sparse
 import scipy
 import numpy
-#print "Hola"
 from scipy import spatial
+
 def getArray():
 	tfidf = numpy.load(open('array.npy','rb'))
 	return tfidf
