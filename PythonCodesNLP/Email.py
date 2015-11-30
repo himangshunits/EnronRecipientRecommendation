@@ -1,3 +1,4 @@
+###The script is used to generate the email likelihood using the bag of words model
 import numpy
 import nltk
 import re
@@ -108,9 +109,9 @@ s_mid_set="("+s_mid_set+")"
 #print "\nsender set is\n"
 #print s_mid_unique
 
-alpha=0.33
-beta=0.33
-gamma=0.33
+alpha=0.6
+beta=0.2
+gamma=0.2
 prod=1
 for term in vocab:
     query=("select sum(count) from document_term where term=\""+term+"\" and number in "+s_mid_set)
