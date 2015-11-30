@@ -1,3 +1,4 @@
+##The script parses the text mails in the enron dataset folder structure and updates the mysql database with the body after initial cleaning
 import os
 #########f=open("C:\\Users\\sukriti\\Desktop\\sukriti\\data mining\\project\\enron_mail_20150507\\maildir\\badeer-r\\press_releases\\6_","r")
 body=""
