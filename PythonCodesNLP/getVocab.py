@@ -1,4 +1,4 @@
-
+###The script acts as a library to convert the test emails to a bag of words and obtain only the important words from the bag
 import numpy
 import nltk
 import re
@@ -117,7 +117,4 @@ def getAccurateVocab(data, usefulWords):
 
     return list(resultSet)    
 
-#temp1 = getVocab("Himangshu Ranjan Borah is a student at NC State")
-#temp = getAccurateVocab("Himangshu Ranjan Borah is a student at NC State", "himangshu borah")
-#print temp
-#print temp1
+
